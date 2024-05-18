@@ -1,3 +1,3 @@
 # kuraiapp
-Kurai Tachi's APP using Flutter
+Kurai Tachi's APP using React Native
 
