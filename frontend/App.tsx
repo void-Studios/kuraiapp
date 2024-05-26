@@ -1,7 +1,7 @@
 import React, {useState,useEffect}  from 'react';
 import {StyleSheet, Text, View,TextInput, Button, Alert} from 'react-native';
 import {generateRandomFirstName, generateRandomLastName} from './utils/NameGenerator';
-import { getRandomQuote,getRandomFirstName,getRandomLastName,postSubmitTicket } from './utils/api';
+import { getRandomQuote,getRandomFirstName,getRandomLastName,postSubmitTicket,getRandomTitle } from './utils/api';
 
 
 const styles = StyleSheet.create({
@@ -20,12 +20,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 40,
   },
+  descriptionContainer:{
+    height:100,
+  }
+  ,
   subContainerText:{
     fontSize: 16,
     color: 'white',
   },
   subContainerInput:{
-    height: 40,
+    height: 80,
   },
   red: {
     color: 'red',
@@ -59,20 +63,32 @@ const KuraiApp = () => {
   const [quote, setQuote] = useState<string | null>(null);
   const [firstName,setFirstName] = useState<string | null>(null);
   const [lastName,setLastName] = useState<string | null>(null);
+  const [randomTitle,setRandomTitle] = useState<string | null>(null);
 
   const [titleText, setTitleText] = useState('');
   const [descriptionText, setDescriptionText] = useState('');
-  const [assigneeText, setAssigneeText] = useState('');
+  const [emailText, setEmailText] = useState('');
+  let userName =""
+
+  if (firstName && lastName){
+    userName = firstName.toLowerCase() + lastName.toLowerCase() + '@kuraitachi.com';
+  } else {
+    userName = emailText
+  } 
 
   const submitTicket = async() =>{
-    try{
-      
-      await postSubmitTicket(titleText,descriptionText,assigneeText);
-      Alert.alert('Ticket submitted successfully');
+    
+    // if (firstName && lastName){
+    //   userName = firstName.toLowerCase() + lastName.toLowerCase() + '@kuraitachi.com';
+    // } else {
+    //   userName = emailText
+    // }  
 
-    } catch (error) {
-      console.error('Testing button',"");
+    if (quote){
+      Alert.alert(quote);
     }
+      await postSubmitTicket(titleText,quote,1,userName);
+      Alert.alert('Ticket submitted successfully under alias');
   };
 
   useEffect(()=> {
@@ -86,6 +102,9 @@ const KuraiApp = () => {
 
       const newLastName = await getRandomLastName();
       setLastName(newLastName);
+     
+      const randomTitle = await getRandomTitle();
+      setRandomTitle(randomTitle);
       
     } catch (error) {
       console.error('Error during useEffect:',error);
@@ -101,15 +120,15 @@ const KuraiApp = () => {
       <View style={styles.subContainer}>
       <TextInput 
         style={styles.subContainerInput} 
-        placeholder='Enter your ticket Title'
+        placeholder={randomTitle ? randomTitle : "Enter your ticket Title"}
         onChangeText={newTitleText => setTitleText(newTitleText)}
         defaultValue={titleText}
         />
       </View>
       <View style={styles.subContainer}>
         <TextInput 
-        style={styles.subContainerInput} 
-        placeholder='Enter your ticket description'
+        style={styles.descriptionContainer} 
+        placeholder={quote ? quote : "Enter your ticket description"}
         onChangeText={newDescriptionText => setDescriptionText(newDescriptionText)}
         defaultValue={descriptionText}
         />
@@ -117,19 +136,19 @@ const KuraiApp = () => {
       <View style={styles.subContainer}>
         <TextInput 
         style={styles.subContainerInput} 
-        placeholder='Select your assignee'
-        onChangeText={newAssigneeText => setAssigneeText(newAssigneeText)}
-        defaultValue={assigneeText}
+        placeholder='Enter your email address'
+        onChangeText={newEmailText => setEmailText(newEmailText)}
+        defaultValue={emailText}
         />
       </View>
 
-      <View style={styles.subContainer}>
+      {/* <View style={styles.subContainer}>
         <Text style={styles.subContainerText}>{quote ? quote : "Loading..."}</Text>      
-      </View>
+      </View> */}
 
       <View style={styles.subContainer}>
         <Button
-          onPress={() => Alert.alert('Simple button is simple')}
+          onPress={() => submitTicket()}
           title='Submit Ticket' 
           accessibilityLabel="Learn about this button"
         />

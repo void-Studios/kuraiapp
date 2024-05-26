@@ -1,3 +1,4 @@
+const API_BASE_URL = "http://api.kuraitachi.com/al";
 const API_URL = "http://api.kuraitachi.com/al/generate_quote";
 
 export const FetchToApi = async (api_url) => {
@@ -39,10 +40,41 @@ export const getRandomLastName = async () => {
     return randomLastName.return.last_name;
 };
 
-export const postSubmitTicket = async (titleText,descriptionText,assigneeText) => {
+export const getRandomTitle = async () => { 
+    const randomTitle = await FetchToApi("http://api.kuraitachi.com/al/generate_quote?mode=word");
+    return randomTitle.return.quote;
+};
+
+
+export const postSubmitTicket = async (titleText,descriptionText,assigneeId,emailText) => {
+    ticketJson = {
+        "title":titleText,
+        "description":descriptionText,
+        "assignee_id":assigneeId,
+        "email":emailText
+    };
+    postLoad = {
+        method:"POST",
+        mode:"cors",
+        cache:"no-cache",
+        credentials:"same-origin",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        redirect : "follow",
+        referrerPolicy: "no-referer",
+        body: JSON.stringify(ticketJson),
+    }
+    const api_url = API_BASE_URL + '/submit_ticket';
+    
     try {
-        console.log(descriptionText);
+        const postResponse = await fetch(api_url,postLoad)
+        if (!postResponse.ok){
+            throw new Error('POST Error: ', postResponse);
+        }
+        return await postResponse.json();
     } catch (error) {
-        console.error("Error submitting ticket:",error);
+        console.error("Error submitting ticket: ",error);
+        throw error;
     }
 }
