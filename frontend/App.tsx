@@ -1,4 +1,4 @@
-import React, {useState,useEffect,Component}  from 'react';
+import React, {useState,useEffect}  from 'react';
 import {StyleSheet, Text, View,TextInput, Button, Alert} from 'react-native';
 import {generateRandomFirstName, generateRandomLastName} from './utils/NameGenerator';
 import { getRandomQuote,getRandomFirstName,getRandomLastName,postSubmitTicket,getRandomTitle } from './utils/api';
@@ -99,7 +99,6 @@ const KuraiApp = () => {
 
     await postSubmitTicket(postText,postDescription,1,userName);
     Alert.alert('Ticket submitted successfully under alias');
-    this.forceUpdate();
   };
 
   useEffect(()=> {

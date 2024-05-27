@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://api.kuraitachi.com/al";
+const API_BASE_URL = "http://api.kuraitachi.com/";
 const API_URL = "http://api.kuraitachi.com/al/generate_quote";
 
 export const FetchToApi = async (api_url) => {
@@ -7,6 +7,7 @@ export const FetchToApi = async (api_url) => {
         if (!response.ok){
             throw new Error('FetchToApi: Network response was not ok');
         }
+
         const jsonResponse = await response.json();
         return jsonResponse;
         
@@ -21,7 +22,6 @@ export const getRandomFirstName = async () => {
     return randomFirstName.return.first_name;
 };
 
-
 export const getRandomLastName = async () => { 
     const randomLastName = await FetchToApi("http://api.kuraitachi.com/al/random_last_name");
     return randomLastName.return.last_name;
@@ -35,6 +35,11 @@ export const getRandomTitle = async () => {
 export const getRandomQuote = async () => { 
     const randomTitle = await FetchToApi("http://api.kuraitachi.com/al/generate_quote?mode=sentence");
     return randomTitle.return.quote;
+};
+
+export const getTicket = async () => { 
+    const randomTitle = await FetchToApi("{{LocalApi}}/kuraiapp/queryTickets?limit=1");
+    return randomTitle.return.tickets;
 };
 
 export const postSubmitTicket = async (titleText,descriptionText,assigneeId,emailText) => {
@@ -56,7 +61,7 @@ export const postSubmitTicket = async (titleText,descriptionText,assigneeId,emai
         referrerPolicy: "no-referer",
         body: JSON.stringify(ticketJson),
     }
-    const api_url = API_BASE_URL + '/submit_ticket';
+    const api_url = API_BASE_URL + '/kuraiapp/submit_ticket';
     
     try {
         const postResponse = await fetch(api_url,postLoad)
