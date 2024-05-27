@@ -5,28 +5,15 @@ export const FetchToApi = async (api_url) => {
     try {
         const response  = await fetch(api_url);
         if (!response.ok){
-            throw new Error('Network response was not ok');
+            throw new Error('FetchToApi: Network response was not ok');
         }
         const jsonResponse = await response.json();
         return jsonResponse;
+        
         } catch (error){
-            console.error('Error fetching to API:',error,response);
+            console.error('FetchToApi: Error fetching to API:',error);
             throw error;
         }
-};
-
-export const getRandomQuote = async () => {
-    try {
-    const response  = await fetch(API_URL);
-    if (!response.ok){
-        throw new Error('Network response was not ok');
-    }
-    const jsonResponse = await response.json();
-    return jsonResponse.return.quote; 
-    } catch (error){
-        console.error('Error fetching to API:',error);
-        throw error;
-    }
 };
 
 export const getRandomFirstName = async () => { 
@@ -45,6 +32,10 @@ export const getRandomTitle = async () => {
     return randomTitle.return.quote;
 };
 
+export const getRandomQuote = async () => { 
+    const randomTitle = await FetchToApi("http://api.kuraitachi.com/al/generate_quote?mode=sentence");
+    return randomTitle.return.quote;
+};
 
 export const postSubmitTicket = async (titleText,descriptionText,assigneeId,emailText) => {
     ticketJson = {
@@ -70,7 +61,10 @@ export const postSubmitTicket = async (titleText,descriptionText,assigneeId,emai
     try {
         const postResponse = await fetch(api_url,postLoad)
         if (!postResponse.ok){
-            throw new Error('POST Error: ', postResponse);
+            console.error(api_url);
+            console.error(postLoad);
+            console.error(postResponse);
+            throw new Error('POST Error: ', postResponse.status);
         }
         return await postResponse.json();
     } catch (error) {

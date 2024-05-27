@@ -1,4 +1,4 @@
-import React, {useState,useEffect}  from 'react';
+import React, {useState,useEffect,Component}  from 'react';
 import {StyleSheet, Text, View,TextInput, Button, Alert} from 'react-native';
 import {generateRandomFirstName, generateRandomLastName} from './utils/NameGenerator';
 import { getRandomQuote,getRandomFirstName,getRandomLastName,postSubmitTicket,getRandomTitle } from './utils/api';
@@ -68,27 +68,38 @@ const KuraiApp = () => {
   const [titleText, setTitleText] = useState('');
   const [descriptionText, setDescriptionText] = useState('');
   const [emailText, setEmailText] = useState('');
-  let userName =""
+  let userName ="";
 
-  if (firstName && lastName){
-    userName = firstName.toLowerCase() + lastName.toLowerCase() + '@kuraitachi.com';
-  } else {
-    userName = emailText
-  } 
+  // if (firstName && lastName){
+  //   userName = firstName.toLowerCase() + lastName.toLowerCase() + '@kuraitachi.com';
+  // } else {
+  //   userName = emailText
+  // } 
 
   const submitTicket = async() =>{
+    let postText = "";
+    let postDescription = "";
+    if (firstName && lastName){
+      userName = firstName.toLowerCase() + lastName.toLowerCase() + '@kuraitachi.com';
+    } else {
+      userName = emailText;
+    }  
     
-    // if (firstName && lastName){
-    //   userName = firstName.toLowerCase() + lastName.toLowerCase() + '@kuraitachi.com';
-    // } else {
-    //   userName = emailText
-    // }  
-
-    if (quote){
-      Alert.alert(quote);
+    if (!titleText && randomTitle){
+        postText=randomTitle;
+    } else {
+        postText = titleText;
     }
-      await postSubmitTicket(titleText,quote,1,userName);
-      Alert.alert('Ticket submitted successfully under alias');
+    
+    if (!descriptionText && quote){
+      postDescription = quote;
+    }else{
+      postDescription=descriptionText;
+    }
+
+    await postSubmitTicket(postText,postDescription,1,userName);
+    Alert.alert('Ticket submitted successfully under alias');
+    this.forceUpdate();
   };
 
   useEffect(()=> {
@@ -120,7 +131,7 @@ const KuraiApp = () => {
       <View style={styles.subContainer}>
       <TextInput 
         style={styles.subContainerInput} 
-        placeholder={randomTitle ? randomTitle : "Enter your ticket Title"}
+        placeholder="Enter your ticket Title"
         onChangeText={newTitleText => setTitleText(newTitleText)}
         defaultValue={titleText}
         />
@@ -128,7 +139,7 @@ const KuraiApp = () => {
       <View style={styles.subContainer}>
         <TextInput 
         style={styles.descriptionContainer} 
-        placeholder={quote ? quote : "Enter your ticket description"}
+        placeholder="Enter your ticket description"
         onChangeText={newDescriptionText => setDescriptionText(newDescriptionText)}
         defaultValue={descriptionText}
         />
