@@ -38,16 +38,16 @@ export const getRandomQuote = async () => {
 };
 
 export const getTicket = async () => { 
-    const randomTitle = await FetchToApi("{{LocalApi}}/kuraiapp/queryTickets?limit=1");
+    const randomTitle = await FetchToApi("http://api.kuraitachi.com/kuraiapp/queryTickets?limit=1");
     return randomTitle.return.tickets;
 };
 
-export const postSubmitTicket = async (titleText,descriptionText,assigneeId,emailText) => {
+export const postEventCard = async (titleText,descriptionText,assigneeId,userName,) => {
     ticketJson = {
         "title":titleText,
         "description":descriptionText,
         "assignee_id":assigneeId,
-        "email":emailText
+        // "user_id":userName
     };
     postLoad = {
         method:"POST",
@@ -61,7 +61,7 @@ export const postSubmitTicket = async (titleText,descriptionText,assigneeId,emai
         referrerPolicy: "no-referer",
         body: JSON.stringify(ticketJson),
     }
-    const api_url = API_BASE_URL + '/kuraiapp/submit_ticket';
+    const api_url = API_BASE_URL + 'kuraiapp/submitEventCard';
     
     try {
         const postResponse = await fetch(api_url,postLoad)
